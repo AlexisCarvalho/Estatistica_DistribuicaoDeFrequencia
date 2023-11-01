@@ -8,10 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariaveisDAO {
+public class Variaveis {
 
-    public List<BigDecimal> listarDados(Connection conn){
-        List dados = new ArrayList<BigDecimal>();
+    public List<BigDecimal> listarDados(Connection conn) {
+        List<BigDecimal> dados = new ArrayList<>();
 
         String selectSQL = "SELECT * from dados";
 
@@ -19,17 +19,17 @@ public class VariaveisDAO {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(selectSQL);
 
-            while(rs.next()){
+            while (rs.next()) {
                 dados.add(new BigDecimal(rs.getString("variaveis")));
             }
 
-        } catch (SQLException e){
-
+        } catch (SQLException sqlE) {
+            System.err.println(sqlE.getMessage());
         }
         return dados;
     }
 
-    public boolean registrar(String valor,Connection conn) {
+    public boolean registrar(String valor, Connection conn) {
 
         String insertSQL = "INSERT INTO dados (variaveis) VALUES ('"
                 + valor + "')";
@@ -37,7 +37,8 @@ public class VariaveisDAO {
             Statement st = conn.createStatement();
             st.executeUpdate(insertSQL);
             return true;
-        } catch (SQLException ex) {
+        } catch (SQLException sqlE) {
+            System.err.println(sqlE.getMessage());
             return false;
         }
     }

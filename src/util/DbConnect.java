@@ -7,49 +7,53 @@ import java.sql.Statement;
 
 public class DbConnect {
 
-	Connection conn;
-	public static String status = "Não conectou";
-	private static final String tableDados =
-			"create table IF NOT EXISTS dados(" +
-			"variaveis text" +
-			")";
-	private static final String tableDistribuicao =
-			"create table IF NOT EXISTS distribuicao("+
-					"data text," +
-					"fi text," +
-					"xi text," +
-					"fri text," +
-					"friPorcentagem text," +
-					"fac text," +
-					"facPorcentagem text" +
-					")";
-	DbConnect(){
-	}
-	
-	public static Connection getConexaoSQLITE(String banco){
-		Connection connection = null;
+    public static String status = "Não conectou";
+    private static final String tableDados =
+            "create table IF NOT EXISTS dados(" +
+                    "variaveis text" +
+                    ")";
+    private static final String tableDistribuicao =
+            "create table IF NOT EXISTS distribuicao(" +
+                    "data text," +
+                    "fi text," +
+                    "xi text," +
+                    "fri text," +
+                    "friPorcentagem text," +
+                    "fac text," +
+                    "facPorcentagem text" +
+                    ")";
 
-		try {
-			String myDatabase = banco+".db";
-			String url = "jdbc:sqlite:"+myDatabase;
-			
-			connection = DriverManager.getConnection(url);
-			
-			if (connection != null) {
-				status = "Conectado com sucesso";
-			} else {
-				status = "Nao foi possivel conectar";
-			}
+    // TODO: Adicionar sistema para enviar o relatorio ao banco
 
-			Statement st = connection.createStatement();
-			st.executeUpdate(tableDados);
-			st.executeUpdate(tableDistribuicao);
+    DbConnect() {
+    }
 
-			return connection;
+    public static Connection getConexaoSQLITE(String banco) {
+        Connection connection = null;
 
-		}catch (SQLException sqlE) {
-			status = "Nao foi possivel conectar ao banco de dados";
-			return null;
-		}
-	}
+        try {
+            String myDatabase = banco + ".db";
+            String url = "jdbc:sqlite:" + myDatabase;
+
+            connection = DriverManager.getConnection(url);
+
+            if (connection != null) {
+                status = "Conectado com sucesso";
+            } else {
+                status = "Nao foi possivel conectar";
+                System.err.println(status);
+            }
+
+            Statement st = connection.createStatement();
+            st.executeUpdate(tableDados);
+            st.executeUpdate(tableDistribuicao);
+
+            return connection;
+
+        } catch (SQLException sqlE) {
+            System.err.println(status);
+            System.err.println(sqlE.getMessage());
+            return null;
+        }
+    }
 }

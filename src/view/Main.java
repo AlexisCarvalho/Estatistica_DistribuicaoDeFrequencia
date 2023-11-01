@@ -1,22 +1,21 @@
 package view;
 
 import controller.Analise;
-import model.DAO.VariaveisDAO;
+import model.DAO.Variaveis;
 import model.DistribuicaoDeFrequencia;
 import util.DbConnect;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Connection;
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        DistribuicaoDeFrequencia distriDeFre = new DistribuicaoDeFrequencia();
         Analise analise = new Analise();
         Scanner scanner = new Scanner(System.in);
-        VariaveisDAO variaveisDao = new VariaveisDAO();
+        Variaveis variaveis = new Variaveis();
         Random random = new Random();
         Connection conn = null;
 
@@ -41,7 +40,7 @@ public class Main {
                 double escala = scanner.nextDouble();
 
                 for (int a = 0; a < variaveisNovas; a++) {
-                    variaveisDao.registrar(String.valueOf(new BigDecimal(String.valueOf(random.nextDouble(escala)), new MathContext(3))), conn);
+                    variaveis.registrar(String.valueOf(new BigDecimal(String.valueOf(random.nextDouble(escala)), new MathContext(3))), conn);
                 }
                 break;
 
@@ -56,7 +55,7 @@ public class Main {
                     variavel = scanner.next();
 
                     if (!variavel.equals("e") && !variavel.equals("E")) {
-                        variaveisDao.registrar(variavel, conn);
+                        variaveis.registrar(variavel, conn);
                         indice++;
                     }
                 }
@@ -68,15 +67,15 @@ public class Main {
                 break;
         }
 
-        analise.gerarTabela(variaveisDao.listarDados(conn));
+        analise.gerarResultados(variaveis.listarDados(conn));
 
         System.out.println("Numero de dados coletados: " + analise.getNumeroDeDadosColetados());
         System.out.println("xMax: " + analise.getMaiorVariavel());
         System.out.println("xMin: " + analise.getMenorVariavel());
         System.out.println("log: " + analise.getLog());
         System.out.println("Classes: " + analise.getClasses());
-        System.out.println("Amplitude: "+ analise.getAmplitudeAmostral());
-        System.out.println("Amplitude Intervalos: "+ analise.getAmplitudeIntervalos());
+        System.out.println("Amplitude: " + analise.getAmplitudeAmostral());
+        System.out.println("Amplitude Intervalos: " + analise.getAmplitudeIntervalos());
 
         BigDecimal[] limitesInferiores = analise.getLimitesInferiores();
         BigDecimal[] limitesSuperiores = analise.getLimitesSuperiores();
@@ -89,15 +88,15 @@ public class Main {
 
         System.out.println(" li      Li   fi     xi     fri    fri%    fac    fac%");
 
-        for(int smtr = 0;smtr < (analise.getTabela()[0].length - 1);smtr++){
+        for (int smtr = 0; smtr < (analise.getTabela().length); smtr++) {
             System.out.println(
                     limitesInferiores[smtr] + " --| " + limitesSuperiores[smtr] +
-                    " |"+frequenciasAbsolutas[smtr]+"| " +
-                    " |"+pontosMedios[smtr]+"| " +
-                    " |"+frequenciasRelativas[smtr]+"| " +
-                    " |"+frequenciaRelativaPorcentagem[smtr]+"| " +
-                    " |"+frequenciasAcumuladas[smtr]+"| " +
-                    " |"+frequenciasAcumuladasPorcentagem[smtr]+"| "
+                            " |" + frequenciasAbsolutas[smtr] + "| " +
+                            " |" + pontosMedios[smtr] + "| " +
+                            " |" + frequenciasRelativas[smtr] + "| " +
+                            " |" + frequenciaRelativaPorcentagem[smtr] + "| " +
+                            " |" + frequenciasAcumuladas[smtr] + "| " +
+                            " |" + frequenciasAcumuladasPorcentagem[smtr] + "| "
             );
         }
     }

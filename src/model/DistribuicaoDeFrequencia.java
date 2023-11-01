@@ -1,5 +1,7 @@
 package model;
 
+import model.bean.Informacoes;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -12,6 +14,7 @@ public class DistribuicaoDeFrequencia {
     BigDecimal quantiVariaveis, limiteInferior, limiteSuperior, max, min, frequenciaRelativaPorcentagem;
     BigDecimal log, classes, amplitude, amplitudeIntervalos, frequenciaRelativa;
     BigDecimal[][] tabela;
+    Informacoes informacoes;
 
     public DistribuicaoDeFrequencia() {
         totalFrequencia = new BigDecimal("0");
@@ -19,41 +22,22 @@ public class DistribuicaoDeFrequencia {
         totalFrequenciaRelativaPorcentagem = new BigDecimal("0");
         multiplicand = new BigDecimal("3.322");
         quantiVariaveis = new BigDecimal("0");
+        informacoes = new Informacoes();
     }
 
-    public BigDecimal[][] getTabela(){
-        return tabela;
+    public Informacoes getInformacoes() {
+        informacoes.setAmplitude(amplitude);
+        informacoes.setAmplitudeIntervalos(amplitudeIntervalos);
+        informacoes.setClasses(classes);
+        informacoes.setLog(log);
+        informacoes.setMaiorVariavel(max);
+        informacoes.setMenorVariavel(min);
+        informacoes.setNumeroDeDadosColetados(quantiVariaveis);
+        informacoes.setTabela(tabela);
+        return informacoes;
     }
 
-    public int getNumeroDeDadosColetados(){
-        return quantiVariaveis.intValue();
-    }
-
-    public BigDecimal getMaiorVariavel(){
-        return max;
-    }
-
-    public BigDecimal getMenorVariavel(){
-        return min;
-    }
-
-    public BigDecimal getLog(){
-        return log;
-    }
-
-    public int getClasses(){
-        return classes.intValue();
-    }
-
-    public BigDecimal getAmplitudeAmostral(){
-        return amplitude;
-    }
-
-    public BigDecimal getAmplitudeIntervalos(){
-        return amplitudeIntervalos;
-    }
-
-    public void efetuarCalculos (List<BigDecimal> lista) {
+    public void efetuarCalculos(List<BigDecimal> lista) {
 
         Collections.sort(lista);
 
@@ -65,9 +49,9 @@ public class DistribuicaoDeFrequencia {
 
         classes = log.multiply(multiplicand).add(BigDecimal.ONE).round(new MathContext(1));
 
-        if(classes.compareTo(new BigDecimal("15")) > 0){
+        if (classes.compareTo(new BigDecimal("15")) > 0) {
             classes = new BigDecimal("15");
-        } else if (classes.compareTo(new BigDecimal("5")) < 0){
+        } else if (classes.compareTo(new BigDecimal("5")) < 0) {
             classes = new BigDecimal("5");
         }
 
