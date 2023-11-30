@@ -1,13 +1,10 @@
 package view;
 
 import controller.Analise;
-import model.DAO.Variaveis;
-import model.DistribuicaoDeFrequencia;
 import util.DbConnect;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.sql.Connection;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,16 +12,14 @@ public class Main {
     public static void main(String[] args) {
         Analise analise = new Analise();
         Scanner scanner = new Scanner(System.in);
-        Variaveis variaveis = new Variaveis();
         Random random = new Random();
-        Connection conn = null;
+        String banco;
 
-        while (conn == null) {
+        do {
             System.out.println(DbConnect.status);
             System.out.println("Digite o nome do arquivo do banco SQLite de onde virao os dados\n(Nomes nao reconhecido gerarao um novo banco vazio)");
-            String banco = scanner.next();
-            conn = DbConnect.getConexaoSQLITE(banco);
-        }
+            banco = scanner.next();
+        } while (!analise.conectarAoBanco(banco));
 
         int resposta = 0;
         while (resposta < 1 || resposta > 3) {
@@ -40,7 +35,7 @@ public class Main {
                 double escala = scanner.nextDouble();
 
                 for (int a = 0; a < variaveisNovas; a++) {
-                    variaveis.registrar(String.valueOf(new BigDecimal(String.valueOf(random.nextDouble(escala)), new MathContext(3))), conn);
+                    analise.adicionarVariavelAoBanco(String.valueOf(new BigDecimal(String.valueOf(random.nextDouble(escala)), new MathContext(3))));
                 }
                 break;
 
@@ -55,7 +50,7 @@ public class Main {
                     variavel = scanner.next();
 
                     if (!variavel.equals("e") && !variavel.equals("E")) {
-                        variaveis.registrar(variavel, conn);
+                        analise.adicionarVariavelAoBanco(variavel);
                         indice++;
                     }
                 }
@@ -67,8 +62,9 @@ public class Main {
                 break;
         }
 
-        analise.gerarResultados(variaveis.listarDados(conn));
+        analise.gerarResultados(analise.getDadosBanco());
 
+        System.out.println("Relatorio gerado em: " + analise.getData());
         System.out.println("Numero de dados coletados: " + analise.getNumeroDeDadosColetados());
         System.out.println("xMax: " + analise.getMaiorVariavel());
         System.out.println("xMin: " + analise.getMenorVariavel());
@@ -98,6 +94,12 @@ public class Main {
                             " |" + frequenciasAcumuladas[smtr] + "| " +
                             " |" + frequenciasAcumuladasPorcentagem[smtr] + "| "
             );
+        }
+        System.out.println("Deseja registrar o relatorio no banco? 1/S 2/N");
+        resposta = scanner.nextInt();
+
+        if (resposta == 1) {
+            analise.salvarNoBanco();
         }
     }
 }

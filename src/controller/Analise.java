@@ -1,30 +1,64 @@
 package controller;
 
+import model.DAO.InformacoesDAO;
 import model.DistribuicaoDeFrequencia;
 import model.bean.Informacoes;
+import util.DbConnect;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Analise {
 
-    DistribuicaoDeFrequencia distriDeFreque;
-    BigDecimal[][] tabela;
-    Informacoes informacoes;
+    Connection conn;
+    private DistribuicaoDeFrequencia distriDeFreque;
+    private BigDecimal[][] tabela;
+    private Informacoes informacoes;
+    private InformacoesDAO informacoesDAO;
 
     public Analise() {
         distriDeFreque = new DistribuicaoDeFrequencia();
         informacoes = new Informacoes();
+        informacoesDAO = new InformacoesDAO();
+        conn = null;
+    }
+
+    public boolean conectarAoBanco(String nomeBanco) {
+        conn = DbConnect.getConexaoSQLITE(nomeBanco);
+        if (conn != null) {
+            informacoesDAO.setConnection(conn);
+            return true;
+        }
+        return false;
+    }
+
+    public void adicionarVariavelAoBanco(String variavel) {
+        informacoesDAO.registrarVariavel(variavel);
+    }
+
+    public List<BigDecimal> getDadosBanco() {
+        return informacoesDAO.listarDados();
     }
 
     public void gerarResultados(List<BigDecimal> list) {
         distriDeFreque.efetuarCalculos(list);
         informacoes = distriDeFreque.getInformacoes();
+        informacoes.setData(String.valueOf(LocalDate.now()));
         tabela = informacoes.getTabela();
+    }
+
+    public void salvarNoBanco() {
+        informacoesDAO.registrarInformacoes(informacoes);
     }
 
     public BigDecimal[][] getTabela() {
         return tabela;
+    }
+
+    public String getData() {
+        return informacoes.getData();
     }
 
     public int getNumeroDeDadosColetados() {

@@ -10,11 +10,11 @@ import java.util.List;
 
 public class DistribuicaoDeFrequencia {
 
-    BigDecimal multiplicand, totalFrequenciaRelativa, totalFrequencia, totalFrequenciaRelativaPorcentagem;
-    BigDecimal quantiVariaveis, limiteInferior, limiteSuperior, max, min, frequenciaRelativaPorcentagem;
-    BigDecimal log, classes, amplitude, amplitudeIntervalos, frequenciaRelativa;
-    BigDecimal[][] tabela;
-    Informacoes informacoes;
+    private BigDecimal multiplicand, totalFrequenciaRelativa, totalFrequencia, totalFrequenciaRelativaPorcentagem;
+    private BigDecimal quantiVariaveis, limiteInferior, limiteSuperior, max, min, frequenciaRelativaPorcentagem;
+    private BigDecimal log, classes, amplitude, amplitudeIntervalos, frequenciaRelativa;
+    private BigDecimal[][] tabela;
+    private Informacoes informacoes;
 
     public DistribuicaoDeFrequencia() {
         totalFrequencia = new BigDecimal("0");
@@ -47,7 +47,10 @@ public class DistribuicaoDeFrequencia {
         min = lista.get(0);
         max = lista.get((lista.size()) - 1);
 
-        classes = log.multiply(multiplicand).add(BigDecimal.ONE).round(new MathContext(1));
+        classes = log.multiply(multiplicand).add(BigDecimal.ONE).round(new MathContext(2));
+        if (classes.compareTo(BigDecimal.TEN) < 0) {
+            classes = classes.round(new MathContext(1));
+        }
 
         if (classes.compareTo(new BigDecimal("15")) > 0) {
             classes = new BigDecimal("15");
@@ -60,12 +63,10 @@ public class DistribuicaoDeFrequencia {
         amplitude = max.subtract(min);
         amplitudeIntervalos = amplitude.divide(classes, new MathContext(6));
 
-        if (amplitudeIntervalos.compareTo(BigDecimal.TEN) >= 0) {
-            amplitudeIntervalos = amplitudeIntervalos.divide(BigDecimal.TEN, new MathContext(6));
-            amplitudeIntervalos = new BigDecimal(String.valueOf(amplitudeIntervalos.intValue() + 1));            // Arredonda para a dezena mais proxima
-            amplitudeIntervalos = amplitudeIntervalos.multiply(BigDecimal.TEN);
+        if (amplitudeIntervalos.compareTo(BigDecimal.ONE) > 0) {
+            amplitudeIntervalos = new BigDecimal(String.valueOf(amplitudeIntervalos.intValue() + 1)); // Arredondamento dos intervalos, versão inteira mais 1
         } else {
-            amplitudeIntervalos = amplitudeIntervalos.round(new MathContext(1, RoundingMode.CEILING));
+            amplitudeIntervalos = amplitudeIntervalos.round(new MathContext(2, RoundingMode.CEILING)); // Se o numero for menor que 1 se limitara a duas casas decimais, sempre arredondando para o valor mais alto
         }
 
         BigDecimal testeIntervalo = new BigDecimal(String.valueOf(min));

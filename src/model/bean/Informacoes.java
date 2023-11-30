@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 
 public class Informacoes {
 
-    BigDecimal quantiVariaveis, max, min, log, classes, amplitude, amplitudeIntervalos;
-    BigDecimal[][] tabela;
+    private BigDecimal quantiVariaveis, max, min, log, classes, amplitude, amplitudeIntervalos;
+    private BigDecimal[][] tabela;
+    private String data;
 
     public Informacoes() {
+        data = "";
         quantiVariaveis = new BigDecimal("0");
         max = new BigDecimal("0");
         min = new BigDecimal("0");
@@ -15,7 +17,14 @@ public class Informacoes {
         classes = new BigDecimal("0");
         amplitude = new BigDecimal("0");
         amplitudeIntervalos = new BigDecimal("0");
-        tabela = new BigDecimal[1][1];
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public BigDecimal getNumeroDeDadosColetados() {

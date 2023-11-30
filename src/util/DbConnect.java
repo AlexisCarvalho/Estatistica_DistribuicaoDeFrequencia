@@ -9,21 +9,35 @@ public class DbConnect {
 
     public static String status = "Não conectou";
     private static final String tableDados =
-            "create table IF NOT EXISTS dados(" +
+            "create table IF NOT EXISTS DADOS(" +
                     "variaveis text" +
                     ")";
     private static final String tableDistribuicao =
-            "create table IF NOT EXISTS distribuicao(" +
-                    "data text," +
+            "create table IF NOT EXISTS DISTRIBUICAO(" +
+                    "id_distribuicao integer," +
+                    "lim_inferior text," +
+                    "lim_superior text," +
                     "fi text," +
                     "xi text," +
                     "fri text," +
-                    "friPorcentagem text," +
+                    "fri_porcentagem text," +
                     "fac text," +
-                    "facPorcentagem text" +
+                    "fac_porcentagem text" +
                     ")";
 
-    // TODO: Adicionar sistema para enviar o relatorio ao banco
+    private static final String tableInformacoes =
+            "create table IF NOT EXISTS INFORMACOES(" +
+                    "id_informacoes integer primary key autoincrement," +
+                    "id_distribuicao integer," +
+                    "data text," +
+                    "numero_de_dados integer," +
+                    "xMax text," +
+                    "xMin text," +
+                    "log text," +
+                    "classes text," +
+                    "amplitude text," +
+                    "amplitude_intervalos text" +
+                    ")";
 
     DbConnect() {
     }
@@ -47,6 +61,7 @@ public class DbConnect {
             Statement st = connection.createStatement();
             st.executeUpdate(tableDados);
             st.executeUpdate(tableDistribuicao);
+            st.executeUpdate(tableInformacoes);
 
             return connection;
 
